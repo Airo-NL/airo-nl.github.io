@@ -1,14 +1,17 @@
 {
-  "manifest_version": 2,
-	"minimum_chrome_version": "28",
-	"name": "Aliconnect",
-	"short_name": "Aliconnect",
-	"description": "Aliconnect",
-	"display": "fullscreen",
-	"background_color": "#000",
-	"start_url": ".",
-	"scope": "/",
-	"version": "1",
-	"permissions": [ ],
-	"gcm_sender_id": "71562645621"
+  "name": "Airo",
+  "start_url": ".",
+  "display": "fullscreen",
+  "icons": [
+		{
+			"src": "img/favicon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "img/favicon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
 }

@@ -1,236 +1,275 @@
+# AIRO
+# client_id: D1F8C3C7-7A1E-47F7-A316-86F2F6C90BFB
 info:
-  title: Proving
-  description: .
-  termsOfService: http://hoogewerf.aliconnect.nl/docs/
-  contact:
-    email: max.van.kampen@alicon.nl
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Airo Nederland
   version: 1.0.0
+  description: Airo Nederland B.V.
+  contact:
+    email: info@airo.aliconnect.nl
+scope:
+  - name
+  - email
+  - mobile
+ws:
+  url: wss://aliconnect.nl:444
+client:
+  servers:
+    - url: https://airo.aliconnect.nl/api
+    # authorizationUrl: https://login.aliconnect.nl/api/oauth2
+    # tokenUrl: https://login.aliconnect.nl/api/oauth2/token
+css:
+  basebg: '#F3C301'
+  basefg: black
+  # .row.top.bar: background-color:#F3C301; color:black;
+menu:
+  Website:
+    className: shop
+    Website Artikelen:
+      className: product
+      href: '#/System?$filter=IsPublic eq 1&$select=Title,Subject,Summary,files,CatalogPrice,SalesDiscount&$search='
+    Artikelen:
+      className: product
+      href: '#/System?$filter&$select=Title,Subject,Summary&$search='
+    Customer Shop:
+      className: product
+      href: '#/product'
+    Producten:
+      className: product
+      href: '#artikel?id=&q=&filter=&order='
+  Organisatie:
+    Companies:
+      className: company
+      href: Company?$filter&$select=Title,Subject,Summary&$search='
+    Contacts:
+      className: contact
+      href: Contact?$filter&$select=Title,Subject,Summary&$search='
+    Klanten:
+      className: contact
+      href: Klanten?$select=header0,header1,header2,Location,key,data,colorid&$top=5000
+    Klanten openstaand:
+      className: contact
+      href: klanten?filter=openstaand+IS+NOT+NULL&order=openstaand+DESC'
+  Charts:
+    className: shop
+    Omzet/jaar/maand:
+      className: chart
+      href: '#/Charts/omzet/jaar/maand'
+    Omzet/jaar/klant:
+      className: chart
+      href: '#/Charts/omzet/jaar/klant'
+    Omzet/jaar/leverancier:
+      className: chart
+      href: '#/Charts/omzet/jaar/leverancier'
+  Work:
+    className: taskboard
+    In behandeling:
+      className: shopbag
+      href: "#/pakbon?filter=state eq NULL AND verwerkt eq 0"
+    Verwerkt:
+      className: shopbag
+      href: "#/pakbon?filter=state eq NULL AND verwerkt eq 1"
+    Incompeet:
+      className: shopbag
+      href: "#/pakbon?filter=state IN('incompleet')"
+    Geprint:
+      className: shopbag
+      href: "#/pakbon?filter=state IN('geprint')"
+    Gepakt:
+      className: shopbag
+      href: "#/pakbon?filter=state IN('gepakt')"
+    Te factureren:
+      className: shopbag
+      href: "#/pakbon?filter=FaktuurNR eq 0 and datum gt '2018-01-01'"
+    Archief:
+      className: shopbag
+      href: "#/pakbon"
+  ABIS:
+    className: taskboard
+    Klanten:
+      className: contact
+      href: "#/abis_customer?select=Title,Subject,Summary,Location,Datachart&search="
+    Producten:
+      className: shopbag
+      href: "#/abis_product?select=Title,Subject,Summary&search="
+    Verkoop orders:
+      className: shopbag
+      href: "#/abis_salesorder?select=Title,Subject,Summary&search="
+    Facturen:
+      className: invoice
+      href: "#/abis_invoice?select=Title,Subject,Summary&search="
+  Administratie:
+    Facturen openstaand:
+      className: invoice
+      href: "#/factuur?filter=betaaldDT eq NULL"
+    Facturen te boeken:
+      className: invoice
+      href: "#/factuur?filter=geboektDT eq NULL"
+    Facturen alles:
+      className: invoice
+      href: "#/factuur"
+    Voorraadlijst:
+      className: map
+      href: "#/inventaris/lijst"
+  Admin:
+    className: admin
+    Publish:
+      href: "#/admin/publish"
+    Groups:
+      className: crm
+      href: "#/groups"
+    Keys:
+      className: keys
+      href: "#/keys"
+    License:
+      className: License
+      href: "#/License"
+paths:
+  /excel/omzet:
+    get:
+      operationId: Excel.omzet
+      security:
+      - basic_auth:
+        # - read:web
+        - write:admin
+  /excel/omzet_klant:
+    get:
+      operationId: Excel.omzet_klant
+      security:
+      - basic_auth:
+        # - read:web
+        - write:admin
+  /mse/login:
+    get:
+      operationId: /mse()/getUserData
+      responses:
+        200:
+          description: successful operation
+      security:
+      - basic_auth:
+        - read:web
+        - write:web
+  /klant/omzet:
+    get:
+      operationId: Klant.omzet
+      security:
+      - basic_auth:
+        - read:web
+        - write:web
+  /product/voorraad:
+    get:
+      operationId: Product.voorraad
+      security:
+      - basic_auth:
+        - read:web
+        - write:web
 components:
   schemas:
-    Schema:
-      properties:
-        File:
-          legend: Algemeen
-          format: files
-        Title:
-          legend: Content
-          title: Title
-          type: string
-          format: text
-        Children:
-          format: hidden
-          type: array
-        Master:
-          title: Onderdeel van
-          legend: Configuratie
-          schema: Website
-        Src:
-          title: Kopie van
-          legend: Configuratie
-          schema: Webpage
-        Inherit:
-          title: Afgeleid van
-          legend: Configuratie
-          schema: Webpage
-    Folder:
-      color: yellow
+    Item:
+      security:
+        read:
+        - aim_auth:
+          - website.read
+          - admin.read
+        write:
+        - aim_auth:
+          - website.readwrite
+          - admin.readwrite
       header:
-      - [Title]
-      - [Description]
-      - [BodyHTML]
-      properties: &FolderProperties
-        Name:
-          legend: Title
-          title: Name
-        Title:
-          title: Title
-        Tag:
-          title: Tag
-        Children:
-          format: hidden
-          type: array
-        Master:
-          title: Onderdeel van
-          legend: Configuratie
-          schema: Website
-        Src:
-          title: Kopie van
-          legend: Configuratie
-          schema: Webpage
-    Contact:
-      color: green
-      header:
-      - [GivenName,FirstName,MiddleName,Surname]
-      - [Department]
-      - [OfficeLocation]
+      - - Prefix
+        - Tag
+        - Title
+      - - Description
+      - - BodyHTML
       properties:
-        state:
-          label: Account
-          type: radio
+        State:
+          legend: Item
+          title: State
+          format: radio
           filter: 1
-          send: 1
-          title: Functie Status
-          hostID: 1
           options:
-            offline:
-              title: Offline
-              color: rgb(130,130,130)
-            online:
-              title: Online
-              color: rgb(50,50,200)
-            focus:
-              title: Focus
-              color: rgb(50,50,200)
-        Fav:
-          title: Fav
-          type: hidden
-        Initials:
-          label: Contactpersoon
-          title: Initialen
-        GivenName:
-          title: Roepnaam
-        FirstName:
-          title: Voornamen volluit
-        MiddleName:
-          title: Tussenvoegsel
-        Surname:
-          title: Achternaam
-        Company:
-          label: Organisatie
-          title: Organisatie
-          classID: 1002
-          idname: masterID
-        CompanyName:
-          title: Organisatie naam
-        OfficeLocation:
-          title: Site/Vestiging
-        Department:
-          title: Afdeling
-          filter: 1
-          classID: 1007
-        Manager:
-          title: Manager
-          classID: 1004
-        AssistantName:
-          title: Assistent
-          hostID: 1
-          classID: 1004
-        JobTitle:
-          label: Functie
-          title: Functie titel
-          filter: 1
+            run:
+              title: Stopping
+              color: green
+            stopped:
+              title: Clearing
+              color: red
+        CreatedDateTime:
+          type: datetime
+          format: hidden
+        LastModifiedDateTime:
+          type: datetime
+          format: hidden
+        LastVisitDateTime:
+          type: datetime
+          format: hidden
         StartDateTime:
-          title: Start datum
-          type: date
+          type: datetime
+          format: hidden
+        EndDateTime:
+          type: datetime
+          format: hidden
         FinishDateTime:
-          title: Eind datum
-          type: date
-        Arbeidsrelatie:
-          title: Contract
-          type: radio
-          filter: 1
-          options:
-            werknemer:
-              title: Werknemer
-              color: rgb(112,48,160)
-            interim:
-              title: Interim
-              color: rgb(112,48,160)
-            detachering:
-              title: Detachering
-              color: rgb(0,176,240)
-        BusinessPhones0:
-          label: Contactgegevens
-          title: Company Phone
-          type: tel
-          hostID: 1
-        BusinessHomePage:
-          title: Company Website
-          type: url
-          hostID: 1
-        EmailAddresses1Address:
-          title: Company Email
-          type: email
-          hostID: 1
-        MobilePhone1:
-          title: Contact Mobile
-          type: tel
-        BusinessPhones1:
-          title: Contact Phone
-          type: tel
-        EmailAddresses0Address:
-          title: Contact Email
-          type: email
-          rights: 3
-        BusinessAddress:
-          title: Vestigingsadres
-          type: address
-          location: true
-        OtherAddress:
-          title: Post adres
-          type: address
-        EmailAddresses2Address:
-          label: Priv\xE9 contactgegevens
-          title: Email
-          type: email
-          state: personal
-        HomePhones0:
-          title: Priv\xE9 mobiel
-          type: tel
-        HomePhones1:
-          title: Priv\xE9 telefoon
-          type: tel
-        SpouseName:
-          title: Partner naam
-        title:
-          title: Titel
-        Birthday:
-          title: Geboorte datum
-          type: date
-        HomeAddress:
-          title: Thuis adres
-          type: address
-        AfspraakDatum:
-          label: Planning
-          title: Volgend overleg
-          user: host
-          type: date
-        AfspraakTijd:
-          title: Starttijd
-          user: host
-          type: time
-        AfspraakOnderwerp:
-          title: Onderwerp
-          user: host
-          type: textarea
-        ResourceName:
-          label: Resource settings
-          title: Resource name
-          idname: keyname
-        ResourceType:
-          title: Resource type
-        ResourceAvail:
-          title: Beschikbaarheid
-          unit: FTE
-        ResourcePlan:
-          title: Planbaar
-          unit: FTE
-        verlof:
-          title: Verlof
-          type: textarea
-        Gebruiker:
-          label: Account
-          title: User
-          class: account
-          idname: toID
-        groupID:
-          title: Usergroup
+          type: datetime
+          format: hidden
+        Master:
+          filter: true
+          title: Onderdeel van
+          schema: '*'
+        Src:
+          filter: true
+          title: Kopie van
+          schema: '*'
+        Class:
+          filter: true
+          title: Class
+          schema: '*'
+        Children:
+          format: hidden
+          type: array
+        Message:
+          format: hidden
+          type: array
+        File:
+          format: files
+        Prefix:
+          filter: true
+        Tag:
           type: text
-          class: groups
+        Title:
+          type: text
+        Name:
+          type: text
+        Tagname:
+          format: hidden
+          type: array
+        Files:
+          type: hidden
+        to:
+          format: hidden
+          type: array
+          max: 999
+        ID:
+          readOnly: true
+    Folder:
+      allOf:
+      - Item
+
+    Enterprise:
+      allOf:
+      - Item
+      color: rgb(255,167,167)
+    Site:
+      allOf:
+      - Item
+      color: rgb(255,167,167)
+    Area:
+      allOf:
+      - Item
+      color: rgb(255,167,167)
+
     Company:
+      allOf:
+      - Item
       properties:
         Keyname:
           label: Organisatie
@@ -425,7 +464,7 @@ components:
         AccountManager:
           label: Sales
           title: Account Manager
-          classID: 1004
+          classID: "1004"
           filter: 1
         DebNr:
           label: Customer
@@ -437,7 +476,7 @@ components:
           user: host
         VrachtKost:
           title: Vracht kosten
-          unit: \u20AC
+          unit: "\u20AC"
           user: host
         BtwProc:
           title: BTW Percentage
@@ -453,7 +492,7 @@ components:
           filter: 1
         DebYearOrder:
           title: Jaar bestelling
-          unit: k\u20AC
+          unit: "k\u20AC"
           readonly: 1
           filter: 1
         DebState:
@@ -547,10 +586,210 @@ components:
           title: Cluster
         Children:
           type: array
+    Contact:
+      allOf:
+      - Item
+      btns:
+      - msg
+      - fav
+      - printmenu
+      files: []
+      title: Contactpersoon
+      listname: Contactpersoon
+      apps:
+        mobile: []
+      printmenu:
+        obs:
+          title: Organisation Breakdown Structure
+          post:
+            flds: FirstName,LastName
+      sort(a, b): |
+        return String(a.title).split(' ').pop().localeCompare(String(b.title).split(' ').pop());
+      row(row): |
+        var a = String(row.title).split(' '); a.push('<b>' + a.pop() + '</b>'); row.innerHTML = a.join(' '); //row.findstr = accentsTidy(row.title);
+      header:
+      - [GivenName,FirstName,MiddleName,Surname]
+      - [Department]
+      - [OfficeLocation]
+      treeTitleAttributeName: Surname
+      properties:
+        State:
+          label: Account
+          type: radio
+          filter: 1
+          send: 1
+          title: Functie Status
+          hostID: 1
+          options:
+            offline:
+              title: Offline
+              color: rgb(130,130,130)
+            online:
+              title: Online
+              color: rgb(50,50,200)
+            focus:
+              title: Focus
+              color: rgb(50,50,200)
+        Fav:
+          title: Fav
+          type: hidden
+        Initials:
+          label: Contactperson
+          title: Initials
+        GivenName:
+          title: GivenName
+        FirstName:
+          title: FirstName
+        MiddleName:
+          title: MiddleName
+        Surname:
+          title: Surname
+        Company:
+          label: Company
+          title: Company
+          schema: Company
+          idname: masterID
+        CompanyName:
+          title: CompanyName
+        OfficeLocation:
+          title: OfficeLocation
+        Department:
+          title: Afdeling
+          filter: 1
+          schema: Department
+        Manager:
+          title: Manager
+          schema: Contact
+        Assistant:
+          title: Assistant
+          hostID: 1
+          schema: Contact
+        JobTitle:
+          label: Job
+          title: JobTitle
+          filter: 1
+        StartDateTime:
+          title: StartDateTime
+          type: date
+        FinishDateTime:
+          title: FinishDateTime
+          type: date
+        Arbeidsrelatie:
+          title: Contract
+          type: radio
+          filter: 1
+          options:
+            werknemer:
+              title: Werknemer
+              color: rgb(112,48,160)
+            interim:
+              title: Interim
+              color: rgb(112,48,160)
+            detachering:
+              title: Detachering
+              color: rgb(0,176,240)
+        BusinessPhones0:
+          label: Contactgegevens
+          title: Company Phone
+          type: tel
+          hostID: 1
+        BusinessHomePage:
+          title: Company Website
+          type: url
+          hostID: 1
+        EmailAddresses1Address:
+          title: Company Email
+          type: email
+          hostID: 1
+        MobilePhone1:
+          title: Contact Mobile
+          type: tel
+        BusinessPhones1:
+          title: Contact Phone
+          type: tel
+        EmailAddresses0Address:
+          title: Contact Email
+          type: email
+          rights: 3
+        BusinessAddress:
+          title: BusinessAddress
+          type: address
+          location: true
+        OtherAddress:
+          title: Post adres
+          type: address
+        EmailAddresses2Address:
+          label: Privé contactgegevens
+          title: EmailAddresses2Address
+          type: email
+          state: personal
+        HomePhones0:
+          title: HomePhones0
+          type: tel
+        HomePhones1:
+          title: HomePhones1
+          type: tel
+        SpouseName:
+          title: SpouseName
+        Birthday:
+          title: Birthday
+          type: date
+        HomeAddress:
+          title: HomeAddress
+          type: address
+        AfspraakDatum:
+          label: Planning
+          title: Volgend overleg
+          user: host
+          type: date
+        AfspraakTijd:
+          title: Starttijd
+          user: host
+          type: time
+        AfspraakOnderwerp:
+          title: Onderwerp
+          user: host
+          type: textarea
+        ResourceName:
+          label: Resource settings
+          title: Resource name
+          idname: keyname
+        ResourceType:
+          title: Resource type
+        ResourceAvail:
+          title: Beschikbaarheid
+          unit: FTE
+        ResourcePlan:
+          title: Planbaar
+          unit: FTE
+        verlof:
+          title: Verlof
+          type: textarea
+        Gebruiker:
+          label: Account
+          title: User
+          class: account
+          idname: toID
+        groupID:
+          title: Usergroup
+          type: text
+          class: groups
+        Product:
+          title: Products
+          type: array
+          schema: System
+    ChatMessage:
+      allOf:
+      - Item
+      properties:
+        BodyHTML:
+          format: html
+          title: Hoofdtekst
     Website:
+      allOf:
+      - Item
       properties:
         state:
-          label: Website
           type: radio
           title: Status
           options:
@@ -563,15 +802,6 @@ components:
             published:
               title: Zichtbaar
               color: green
-        StartDateTime:
-          title: Start
-          type: date
-        EndDateTime:
-          title: End
-          type: date
-        FinishDateTime:
-          title: Publish
-          type: date
         Domain:
           title: Domain
           idname: keyname
@@ -596,14 +826,15 @@ components:
           title: Factuur referentie
         InvoiceEmail:
           title: Factuur email
-        Children:
-          type: array
     Webpage:
+      allOf:
+      - Item
+      header:
+      - - Title
+      - - Description
+      - - BodyHTML
       properties:
         State:
-          label: State
-          format: radio
-          title: Status
           options:
             draft:
               title: In ontwikkeling
@@ -614,40 +845,23 @@ components:
             published:
               title: Zichtbaar
               color: green
-        StartDateTime:
-          title: Start
-          format: datetime
-        EndDateTime:
-          title: End
-          format: datetime
-        FinishDateTime:
-          title: Publish
-          format: datetime
         News:
+          legend: Webpage
           title: Nieuws
           format: checkbox
         IsSelected:
           title: Selected
           format: checkbox
-        Master:
-          schema: Webpage
-          title: Onderdeel van
         Title:
-          label: Content
-          title: Title
           type: string
           format: text
         Description:
           format: textarea
-          title: Inleiding
         BodyHTML:
-          format: div
+          format: html
           title: Hoofdtekst
         Keywords:
           title: Zoekwoorden
-        Children:
-          format: hidden
-          type: array
         Chapter:
           format: hidden
           type: array
@@ -656,3 +870,507 @@ components:
           format: hidden
           type: array
           schema: Webpage
+        Messages:
+          format: hidden
+          type: array
+          schema: ChatMessage
+
+    # Client:
+    #   allOf:
+    #   - Company
+    Klanten:
+      colorid:
+        0: green
+        1: orange
+        2: red
+        default: blue
+      allOf:
+        - Item
+      table:
+        name: abisingen.customer.list
+        search: [KeyName,CompanyName]
+        filter: [BusinessAddressCountry,BusinessAddressState,BusinessAddressTownship,BusinessAddressLocality,BusinessAddressSublocality,BusinessAddressPostalCodePrefix,BusinessAddressCity]
+      # idname: ID
+      header:
+        - [KeyName,CompanyName]
+        - [BusinessAddressStreet,BusinessAddressPostalCode,BusinessAddressCity]
+        - [BusinessPhones1,MobilePhones1]
+      className: contact
+      properties:
+        ID:
+          title: KlantID
+          legend: Klant
+        KeyName:
+          title: KeyName
+        CompanyName:
+          title: CompanyName
+        Description:
+          title: Description
+
+        BusinessPhones1:
+          legend: Contact
+          title: BusinessPhones1
+        MobilePhones1:
+          title: MobilePhones1
+        CompanyFax:
+          title: CompanyFax
+        BusinessContact:
+          title: BusinessContact
+
+
+        BusinessAddressStreet:
+          legend: BusinessAddress
+          title: BusinessAddressStreet
+        BusinessAddressPostalCode:
+          title: BusinessAddressPostalCode
+        BusinessAddressCity:
+          title: BusinessAddressCity
+          filter: 1
+        BusinessExtra:
+          title: BusinessExtra
+        BusinessAddressCountry:
+          title: Country
+        BusinessAddressState:
+          title: State
+          filter: 1
+        BusinessAddressTownship:
+          title: Township
+        BusinessAddressLocality:
+          title: Locality
+        BusinessAddressSublocality:
+          title: Sublocality
+        BusinessAddressPostalCodePrefix:
+          title: PostalCodePrefix
+          filter: 1
+        OtherAddressStreet:
+          legend: OtherAddress
+          title: OtherAddressStreet
+        OtherAddressCity:
+          title: OtherAddressCity
+        OtherContact:
+          title: OtherContact
+        OtherExtra:
+          title: OtherExtra
+
+        DebNR:
+          legend: Administration
+          title: DebNR
+        DebName:
+          title: DebName
+    abis_product:
+      allOf:
+      - Item
+      table:
+        name: abisingen.product.list
+        search: [Title,TagName]
+        header: [[Brand,Title],[Bedrijf],[]]
+        filter: [Bedrijf,Brand]
+      className: product
+      apps:
+        mobile: {}
+      properties:
+        ID:
+          legend: Product
+          title: ID
+        Description:
+          title: Manufacturer
+        Brand:
+          title: Brand
+        ProductGroup:
+          title: Product group
+        Title:
+          title: Title
+        Description:
+          title: Description
+        TagName:
+          title: Tag name
+        Supplier:
+          title: Supplier
+        OrderCode:
+          title: Order code
+        Barcode:
+          title: Barcode
+        PackageUnit:
+          legend: Package
+          title: Package unit
+        PackageQuantity:
+          title: Package quantity
+        PackageWeight:
+          title: Package weight
+        CatalogPrice:
+          title: Catalog price
+        PurchaseDiscount:
+          title: Purchase discount
+        PurchasePrice:
+          title: Purchase price
+        SalesDiscount:
+          title: Sales discount
+        SalesMargin:
+          title: Sales margin
+        SalesPrice:
+          title: Sales price
+        StartOfStock:
+          title: Start of stock
+        Stock:
+          title: Stock
+        StockLocation:
+          title: Stock location
+    abis_salesorder:
+      allOf:
+      - Item
+      table:
+        name: abisingen.salesorder.list
+        idname: PakbonID
+        # search: [PakbonID,KlantID,FaktuurNr,Title,TagName]
+        search: [Name]
+        filter: [Bedrijf,State]
+      # searchNames: [PakbonID, KlantID, FaktuurNr]
+      header:
+        - [Name]
+        - [Bedrijf]
+        - [FactuurDateTime]
+      path: /po
+      headerProperties: [[Bedrijf, State, PakbonID],[TotExcl],[KlantID, TotExcl]]
+      properties:
+        id: { legend: Pakbon }
+        PakBonId: {}
+        KlantID: {}
+        KlantIdFak: {}
+        Datum: {}
+        DatumBesteld: {}
+        DatumGeprint: {}
+        DatumVerwerkt: {}
+        RouteNr: {}
+        VolgNr: {}
+        UwRef: {}
+        Aanbieding: {}
+        Verwerkt: {}
+        FaktuurNr: {}
+        Status: {}
+        Gepakt: {}
+        Tekenbon: {}
+        Paklijst: {}
+        Opmerking: {}
+        User: {}
+        nettoverk: {}
+        nettoink: {}
+        opbrengst: {}
+        modifiedby: {}
+        pickBonId: {}
+        itemId: {}
+        leverdatum: {}
+        transportnr: {}
+        factuurdatum: {}
+        factuurnr: {}
+        uid: {}
+        boekdatum: {}
+        betaaldatum: {}
+        betaalwijze: {}
+        factuurPrintDt: {}
+        factuurEmailAddress: {}
+        factuurMailDt: {}
+        TotExcl: {}
+        TotBTW: {}
+        TotIncl: {}
+        betaaldDT: {}
+        verstuurdDT: {}
+        geboektDT: {}
+        voldaanContant: {}
+        voldaanPIN: {}
+        voldaanBank: {}
+    abis_invoice:
+      allOf:
+      - Item
+      table:
+        name: abisingen.invoice.list
+        search: [Title]
+        header: [[Title],[Bedrijf],[]]
+        filter: [Bedrijf,Firma]
+      className: invoice
+      external: true
+      view: { className: view }
+      operations:
+        boeken: { title: Boeken }
+        betaald: { title: Betaald }
+      properties:
+        Bedrijf: { legend: Factuur, kop: 0, title: Bedrijf }
+        FaktuurNr: { kop: 0, title: FaktuurNr }
+        KlantID: { kop: 0, filter: 1, title: KlantID }
+        DebNR: { kop: 0, title: DebiteurNR }
+        Datum: { kop: 1, title: Datum }
+        Status: { kop: 1, filter: 1, title: Status }
+        Tot: { title: Tot }
+        TotExcl: { title: TotExcl, kop: 2, prefix: € }
+        BTW: { title: BTW, kop: 2, unit: '%' }
+        TotBTW: { title: TotBTW, kop: 2, prefix: € }
+        TotIncl: { title: TotIncl, kop: 2, prefix: € }
+        KortContant: { title: KortContant, filter: 1, kop: 2, unit: '%', prefix: (, postfix: ) }
+        VrachtKost: { title: VrachtKost, kop: 2 }
+        Verwerkt: { filter: 1, title: Verwerkt }
+        Betaald: { filter: 1, title: Betaald }
+        betaaldDT: { title: betaaldDT }
+        bankbetaaldDT: { title: bankbetaaldDT }
+        TotBetaald: { title: TotBetaald }
+        Geboekt: { filter: 1, title: Geboekt }
+        geboektDT: { title: geboektDT }
+        DatumGeprint: { title: DatumGeprint }
+        DatumVerwerkt: { title: DatumVerwerkt }
+        Voldaan: { filter: 1, title: Voldaan }
+        verstuurdDT: { title: verstuurdDT }
+        klantAid: { title: klantAid }
+        gezienDT: { title: gezienDT }
+
+    System:
+      allOf:
+      - Item
+      btnbar:
+        view:
+          popupmenu:
+            sbs:
+              title: SBS
+              object: sbs
+              onclick(event): |
+                //event.stopPropagation(); aim.Document.create({ el: collist, item: this.item });
+            show3d:
+              title: Toon 3D Model
+              hidden: true
+              onclick(): |
+                //console.log('3D', aim.itemPage); aim.itemPage.model3d();
+      btns: [msg,fav,send,clone,edit,network,printmenu]
+      childClasses:
+        - title: System
+        - title: Product
+      backgroundColor: blue
+      treeTitleAttributeName: Product
+      apps:
+        mobile: {}
+      header:
+        - [Brand,Product,Model,Type,Serie,Version,Shape,Material,Quality,Color,Purpose,Unit,Content,ContentUnit,PackageUnit,PackageQuantity]
+        - []
+        - [Description]
+      properties:
+        Manufacturer:
+          title: Manufacturer
+          legend: System
+          schema: Company
+        Brand:
+          title: Brand
+          schema: Brand
+        Product:
+          title: Product
+        Name:
+          title: Name
+        Title:
+          title: Title
+        Subject:
+          title: Subject
+        Model:
+          title: Model
+          filter: 1
+        Type:
+          title: Type
+          filter: 1
+        Serie:
+          title: Serie
+          filter: 1
+        Version:
+          title: Version
+          filter: 1
+        Shape:
+          title: Shape
+          filter: 1
+        Material:
+          title: Material
+          filter: 1
+        Quality:
+          title: Quality
+          filter: 1
+        Color:
+          title: Color
+          filter: 1
+        Purpose:
+          title: Purpose
+          filter: 1
+        Unit:
+          title: Eenheid
+          filter: 1
+        Content:
+          title: Content
+          filter: 1
+        ContentUnit:
+          title: Content unit
+          filter: 1
+          enum:
+          - liter
+          - meter
+          - mm
+          - nano
+          - mu
+        Description:
+          title: Description
+          legend: Toelichting
+          type: textarea
+        BodyHTML:
+          title: Pagina tekst
+          type: div
+        Remark:
+          title: Remark
+          type: textarea
+        ProductTitle:
+          title: Product titel
+        Keyname:
+          title: Keyname
+          idname: keyname
+        Tag:
+          title: Tag
+          idname: tag
+        Subsystem:
+          title: Subsystem
+          legend: Subsystems
+          type: array
+          min: 0
+          max: 100
+          schema: System
+        Dimensions:
+          legend: Dimensions
+          title: Dimensions
+          filter: 1
+        Length:
+          title: Length
+          type: number
+          step: 10
+          unit: mm
+        Width:
+          title: Width
+          type: number
+          step: 10
+          unit: mm
+        Height:
+          title: Height
+          type: number
+          step: 10
+          unit: mm
+        Weight:
+          title: Weight
+          unit: kg
+        PackageUnit:
+          title: Package unit
+          legend: Package
+          filter: 1
+        PackageQuantity:
+          title: Package quantity
+          filter: 1
+          type: number
+          step: 1
+        PackageLength:
+          title: Package length
+          type: number
+          step: 10
+          unit: mm
+        PackageWidth:
+          title: Package width
+          type: number
+          step: 10
+          unit: mm
+        PackageHeight:
+          title: Package height
+          type: number
+          step: 10
+          unit: mm
+        PackageWeight:
+          title: Package weight
+          unit: kg
+        Stock:
+          title: Stock
+          step: 1
+          type: number
+        StockLocation:
+          legend: Stock
+          title: Stock location
+        StockMinimum:
+          title: Stock minimum
+          step: 1
+          type: number
+        StartOfStock:
+          title: Start of stock
+          step: 1
+          type: number
+        CatalogPrice:
+          legend: Sales
+          title: Catalog price
+          type: number
+          format: currency
+          step: 0.010000
+        SalesDiscount:
+          title: Sales discount
+          unit: '%'
+        # SalesMargin:
+        #   title: Sales margin
+        #   unit: '%'
+        SalesPrice:
+          title: Sales price
+          readonly: 1
+          format: currency
+          type: number
+          step: 0.010000
+          get(): |
+            var srcItem = api.items[this.srcID] || { values: {} } return Number(this.values.cp || srcItem.values.cp) * (100 - Number(this.values.sd || srcItem.values.sd || 0)) / 100
+        CustomerDiscount:
+          title: Customer discount
+          unit: '%'
+        FAT:
+          default: hoog
+          title: FAT
+          options:
+          - hoog
+          - laag
+        FixedCostPrice:
+          title: Fixed cost price
+          lv: 1
+          type: number
+          step: 0.010000
+        Supplier:
+          legend: Purchase
+          title: Supplier
+          schema: company
+        PurchaseDiscount:
+          title: Purchase discount
+          unit: '%'
+        PurchasePrice:
+          title: Purchase price
+          readonly: 1
+          format: currency
+          get(): |
+            var srcItem = api.items[this.srcID] || { values: {} } return (this.values.cp || srcItem.values.cp) * (100 - Number(this.values.pd || srcItem.values.pd || 0)) / 100
+        OrderQuantity:
+          title: Order quantity
+          step: 1
+          type: number
+        WWW:
+          title: Deze pagina tonen op internet
+          type: checkbox
+          idname: IsPublic
+        News:
+          title: News
+          type: checkbox
+        Children:
+          type: array
+maps:
+  styles:
+    # - featureType: administrative.locality
+    #   elementType: labels
+    #   stylers:
+    #     - visibility: "off"
+    - featureType: landscape.natural
+      stylers:
+        - visibility: "off"
+    - featureType: poi
+      stylers:
+        - visibility: "off"
+    - featureType: transit
+      stylers:
+        - visibility: "off"
+    - featureType: water
+      elementType: labels
+      stylers:
+        - visibility: "off"
