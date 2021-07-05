@@ -17,6 +17,8 @@ client:
     - url: https://airo.aliconnect.nl/api
     # authorizationUrl: https://login.aliconnect.nl/api/oauth2
     # tokenUrl: https://login.aliconnect.nl/api/oauth2/token
+ref:
+  home: //airo.aliconnect.nl/wiki/Home.md
 css:
   basebg: '#F3C301'
   basefg: black
