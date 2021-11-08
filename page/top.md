@@ -1,4 +1,4 @@
-- Producten
+- Prod
     - [Paint](/Paint)
     - [Non paint](/Non-paint)
 - Aanbiedingen
