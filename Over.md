@@ -1,4 +1,4 @@
-![pand_AIRO.jpg](/img/pand_AIRO.jpg)
+![pand_AIRO.jpg](/assets/img/pand_AIRO.jpg)
 
 Airo Nederland is de enige importeur van Airo plamuren, acryl produkten en diverse paint- en non-paint artikelen in Nederland. Deze artikelen zijn bestemd voor autoschadebedrijven, industrie en ambacht. Airo produkten worden gefabriceerd door airo-chemie in Duitsland, de oudste en meest ervaren aanbieder in deze markt. Kenmerkend voor airo produkten is de constante hooge kwaliteit.
 
